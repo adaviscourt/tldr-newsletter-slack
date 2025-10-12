@@ -1,0 +1,86 @@
+ACCEPTED_NEWSLETTERS = {
+    "tech": {
+        "title": "Startups, Tech & Programming",
+        "description": "The most interesting stories in tech, startups, and programming",
+        "emoji": "👨‍💻",
+        "endpoint": "tech",
+    },
+    "webdev": {
+        "title": "Web Development",
+        "description": "Curated deep dives, tools, and trends in frontend, backend, and full stack web development",
+        "emoji": "💻",
+        "endpoint": "webdev",
+    },
+    "ai": {
+        "title": "AI",
+        "description": "Launches, innovations, and research for AI, machine learning, and data science professionals",
+        "emoji": "🧠",
+        "endpoint": "ai",
+    },
+    "infosec": {
+        "title": "Information Security",
+        "description": "News, research, and tools for information security professionals",
+        "emoji": "🔒",
+        "endpoint": "infosec",
+    },
+    "product": {
+        "title": "Product Management",
+        "description": "Deep dives, trends, and resources for product managers",
+        "emoji": "🧑‍🤝‍🧑",
+        "endpoint": "product",
+    },
+    "devops": {
+        "title": "DevOps",
+        "description": "Tools, trends, and insights for DevOps engineers",
+        "emoji": "☁️",
+        "endpoint": "devops",
+    },
+    "founders": {
+        "title": "Founders",
+        "description": "Tactics, trends, and tools for startup founders and entrepreneurs",
+        "emoji": "👨‍💼",
+        "endpoint": "founders",
+    },
+    "design": {
+        "title": "Design",
+        "description": "Tools, trends, and inspiration for designers",
+        "emoji": "🎨",
+        "endpoint": "design",
+    },
+    "marketing": {
+        "title": "Marketing",
+        "description": "Tactics, trends, and tools for cutting edge marketers",
+        "emoji": "📈",
+        "endpoint": "marketing",
+    },
+    "crypto": {
+        "title": "Crypto",
+        "description": "The latest launches, innovations, and market moves in crypto & Web3",
+        "emoji": "🪙",
+        "endpoint": "crypto",
+    },
+    "fintech": {
+        "title": "Fintech",
+        "description": "Innovations and trends in financial markets and technology",
+        "emoji": "💰",
+        "endpoint": "fintech",
+    },
+    "it": {
+        "title": "IT",
+        "description": "News and trends in IT strategy, information security, and cloud computing",
+        "emoji": "💻",
+        "endpoint": "it",
+    },
+    "data": {
+        "title": "Data",
+        "description": "Big data, data science and data engineering",
+        "emoji": "📊",
+        "endpoint": "data",
+    },
+    "hardware": {
+        "title": "Hardware",
+        "description": "The latest in robotics, semiconductors and hardware engineering",
+        "emoji": "⚙️",
+        "endpoint": "hardware",
+    },
+}
