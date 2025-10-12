@@ -120,12 +120,6 @@ class NewsletterArticles:
         # Cache the scraped articles
         db_manager.cache_articles(self.newsletter, date, articles)
         
-        # Debug: Check what type of articles we're returning
-        for category_name, category_data in articles["data"]["categories"].items():
-            if isinstance(category_data, dict) and "articles" in category_data:
-                for i, article in enumerate(category_data["articles"][:1]):  # Check first article only
-                    logging.info(f"Returning article type for {category_name}: {type(article)} - {article}")
-        
         return articles
     
     def _reconstruct_articles_from_cache(self, cached_data: Dict[str, any]) -> Dict[str, any]:
@@ -135,24 +129,8 @@ class NewsletterArticles:
                 if isinstance(category_data, dict) and "articles" in category_data:
                     reconstructed_articles = []
                     for article_data in category_data["articles"]:
-                        if isinstance(article_data, dict):
-                            # New format: Convert dict back to Article namedtuple
-                            article = Article.from_dict(article_data)
-                            reconstructed_articles.append(article)
-                        elif isinstance(article_data, list) and len(article_data) == 5:
-                            # Old format: Convert list back to Article namedtuple
-                            logging.info(f"Reconstructing article from list: {article_data}")
-                            article = Article(
-                                link=article_data[0],
-                                title=article_data[1],
-                                text=article_data[2],
-                                parent_section_title=article_data[3],
-                                parent_section_emoji=article_data[4]
-                            )
-                            reconstructed_articles.append(article)
-                        else:
-                            # If it's already an Article, keep as is
-                            reconstructed_articles.append(article_data)
+                        article = Article.from_dict(article_data)
+                        reconstructed_articles.append(article)
                     category_data["articles"] = reconstructed_articles
         cached_data["cache_date"] = cached_data["metadata"]["date"]
         return cached_data
@@ -183,4 +161,3 @@ class NewsletterArticles:
 if __name__ == "__main__":
     newsletter = NewsletterArticles(newsletter="data")
     articles = newsletter.get_articles()
-    print(articles["metadata"])
