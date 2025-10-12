@@ -20,9 +20,7 @@ app = Flask(__name__)
 @app.route("/articles", methods=["GET"])
 def get_articles():
     newsletter_type = request.args.get("newsletter", "tech")  # Default to 'tech'
-    logging.debug(
-        f"Fetching articles for newsletter: {newsletter_type}"
-    )
+    logging.debug(f"Fetching articles for newsletter: {newsletter_type}")
     if newsletter_type not in ACCEPTED_NEWSLETTERS:
         return (
             jsonify(
@@ -33,9 +31,7 @@ def get_articles():
             400,
         )
     try:
-        newsletter = NewsletterArticles(
-            newsletter=newsletter_type
-        )
+        newsletter = NewsletterArticles(newsletter=newsletter_type)
         articles = newsletter.get_articles()
         logging.debug(f"Fetched articles: {articles}")
         return jsonify(articles), 200
@@ -48,7 +44,9 @@ def get_articles():
 def post_articles():
     data = request.get_json()
     newsletter_type = data.get("newsletter", "tech")  # Default to 'tech'
-    channel = data.get("channel", f"tldr-newsletter-{newsletter_type}")  # Default Slack channel
+    channel = data.get(
+        "channel", f"tldr-newsletter-{newsletter_type}"
+    )  # Default Slack channel
     token = os.getenv("SLACK_API_TOKEN")
 
     if newsletter_type not in ACCEPTED_NEWSLETTERS:
@@ -63,9 +61,7 @@ def post_articles():
     if not token:
         return jsonify({"error": "SLACK_API_TOKEN not set"}), 500
     try:
-        newsletter = NewsletterArticles(
-            newsletter=newsletter_type
-        )
+        newsletter = NewsletterArticles(newsletter=newsletter_type)
         articles = newsletter.get_articles()
         logging.debug(
             f"Fetched {articles['metadata']['total_articles']} articles for date {articles['metadata']['date']}"
@@ -87,9 +83,13 @@ def health_check():
         if db_status:
             return jsonify({"status": "ok"}), 200
         else:
-            return jsonify({"status": "error", "message": "Database connection failed"}), 500
+            return (
+                jsonify({"status": "error", "message": "Database connection failed"}),
+                500,
+            )
     else:
         return jsonify({"status": "ok"}), 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

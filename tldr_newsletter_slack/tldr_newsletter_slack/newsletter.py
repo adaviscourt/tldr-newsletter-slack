@@ -28,16 +28,16 @@ class Article(NamedTuple):
             "parent_section_title": self.parent_section_title,
             "parent_section_emoji": self.parent_section_emoji,
         }
-    
+
     @classmethod
-    def from_dict(cls, data: Dict[str, str]) -> 'Article':
+    def from_dict(cls, data: Dict[str, str]) -> "Article":
         """Create Article instance from dictionary."""
         return cls(
             link=data["link"],
             title=data["title"],
             text=data["text"],
             parent_section_title=data["parent_section_title"],
-            parent_section_emoji=data["parent_section_emoji"]
+            parent_section_emoji=data["parent_section_emoji"],
         )
 
 
@@ -52,14 +52,14 @@ class NewsletterArticles:
 
     def get_articles(self) -> Dict[str, List[Article]]:
         date, page = self._get_recent_articles()
-        
+
         # Try to get from cache first
         cached_articles = db_manager.get_cached_articles(self.newsletter, date)
         if cached_articles:
             logging.info(f"Returning cached articles for {self.newsletter} on {date}")
             # Convert cached dictionaries back to Article namedtuples
             return self._reconstruct_articles_from_cache(cached_articles)
-        
+
         # If not in cache, scrape and cache
         logging.info(f"Scraping articles for {self.newsletter} on {date}")
         soup = self._get_soup(page)
@@ -110,19 +110,25 @@ class NewsletterArticles:
         total_categories = len(articles["data"]["categories"])
         total_articles = sum(
             [
-                len(category_data["articles"]) if isinstance(category_data, dict) and "articles" in category_data else 0
+                (
+                    len(category_data["articles"])
+                    if isinstance(category_data, dict) and "articles" in category_data
+                    else 0
+                )
                 for category_data in articles["data"]["categories"].values()
             ]
         )
         articles["metadata"]["total_categories"] = total_categories
         articles["metadata"]["total_articles"] = total_articles
-        
+
         # Cache the scraped articles
         db_manager.cache_articles(self.newsletter, date, articles)
-        
+
         return articles
-    
-    def _reconstruct_articles_from_cache(self, cached_data: Dict[str, any]) -> Dict[str, any]:
+
+    def _reconstruct_articles_from_cache(
+        self, cached_data: Dict[str, any]
+    ) -> Dict[str, any]:
         """Convert cached dictionaries back to Article namedtuples."""
         if "data" in cached_data and "categories" in cached_data["data"]:
             for category_data in cached_data["data"]["categories"].values():

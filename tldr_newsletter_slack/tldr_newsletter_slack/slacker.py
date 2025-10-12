@@ -31,10 +31,12 @@ class Slacker:
             for _, data in articles["data"]["categories"].items():
                 time.sleep(10)
                 for article in data["articles"]:
-                    if data["title"]:  # Check if category title exists (usually sponsor article if not)
+                    if data[
+                        "title"
+                    ]:  # Check if category title exists (usually sponsor article if not)
                         msg = f"""<{article.link}|{article.title}>\n{article.text}"""
                         self.post_message(
                             text=msg,
                             username=data["title"],
                             icon_emoji=data["emoji"],
-                    )
+                        )
