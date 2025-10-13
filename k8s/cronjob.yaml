@@ -1,0 +1,123 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: tldr-data-post-articles
+spec:
+  schedule: "0 14 * * *" # 6AM PST (14:00 UTC)
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: tldr-newsletter-slack
+        spec:
+          containers:
+            - name: post-articles
+              image: curlimages/curl:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - >
+                  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://tldr-newsletter-slack:5000/post-articles
+                  -H "Content-Type: application/json"
+                  -d '{"newsletter": "'$NEWSLETTER'"}');
+                  if [ "$STATUS_CODE" -ne 200 ]; then
+                    echo "Request failed with status code $STATUS_CODE";
+                    exit 1;
+                  fi
+              env:
+                - name: NEWSLETTER
+                  value: "data"
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: tldr-tech-post-articles
+spec:
+  schedule: "0 14 * * *" # 6AM PST (14:00 UTC)
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: tldr-newsletter-slack
+        spec:
+          containers:
+            - name: post-articles
+              image: curlimages/curl:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - >
+                  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://tldr-newsletter-slack:5000/post-articles
+                  -H "Content-Type: application/json"
+                  -d '{"newsletter": "'$NEWSLETTER'"}');
+                  if [ "$STATUS_CODE" -ne 200 ]; then
+                    echo "Request failed with status code $STATUS_CODE";
+                    exit 1;
+                  fi
+              env:
+                - name: NEWSLETTER
+                  value: "tech"
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: tldr-devops-post-articles
+spec:
+  schedule: "0 14 * * *" # 6AM PST (14:00 UTC)
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: tldr-newsletter-slack
+        spec:
+          containers:
+            - name: post-articles
+              image: curlimages/curl:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - >
+                  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://tldr-newsletter-slack:5000/post-articles
+                  -H "Content-Type: application/json"
+                  -d '{"newsletter": "'$NEWSLETTER'"}');
+                  if [ "$STATUS_CODE" -ne 200 ]; then
+                    echo "Request failed with status code $STATUS_CODE";
+                    exit 1;
+                  fi
+              env:
+                - name: NEWSLETTER
+                  value: "devops"
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: tldr-product-post-articles
+spec:
+  schedule: "0 14 * * *" # 6AM PST (14:00 UTC)
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: tldr-newsletter-slack
+        spec:
+          containers:
+            - name: post-articles
+              image: curlimages/curl:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - >
+                  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://tldr-newsletter-slack:5000/post-articles
+                  -H "Content-Type: application/json"
+                  -d '{"newsletter": "'$NEWSLETTER'"}');
+                  if [ "$STATUS_CODE" -ne 200 ]; then
+                    echo "Request failed with status code $STATUS_CODE";
+                    exit 1;
+                  fi
+              env:
+                - name: NEWSLETTER
+                  value: "product"
+          restartPolicy: OnFailure
