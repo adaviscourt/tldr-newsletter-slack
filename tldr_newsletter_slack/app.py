@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from flask import Flask, request, jsonify
 from tldr_newsletter_slack.newsletter import NewsletterArticles
 from tldr_newsletter_slack.slacker import Slacker
-from tldr_newsletter_slack.database import db_manager
+from tldr_newsletter_slack.database import db_manager, is_database_enabled
 from tldr_newsletter_slack.common.constants import ACCEPTED_NEWSLETTERS
 
 # Configure logging
@@ -139,13 +139,19 @@ def post_articles():
 
 @app.route("/health", methods=["GET"])
 def health_check():
-    if os.getenv("ENABLE_DATABASE", "false") == "true":
+    if is_database_enabled():
         db_status = db_manager.is_available()
         if db_status:
             return jsonify({"status": "ok"}), 200
         else:
             return (
-                jsonify({"status": "error", "message": "Database connection failed"}),
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": "Database connection failed",
+                        "reason": db_manager.unavailable_reason,
+                    }
+                ),
                 500,
             )
     else:

@@ -26,10 +26,15 @@ By default, the container posts `data,tech,devops,product,ai` at `06:00` in `Ame
 | `NEWSLETTERS` | `data,tech,devops,product,ai` | Comma-separated newsletter list |
 | `SLACK_CHANNEL_PREFIX` | `tldr-newsletter-` | Prefix for default Slack channels |
 | `ENABLE_DATABASE` | `false` | Enables PostgreSQL cache if you provide `DB_*` vars |
+| `DATABASE_URL` | unset | Optional SQLAlchemy URL. Use `sqlite:////data/tldr_cache.db` for a local SQLite cache. |
 
 ### Unraid setup
 
 Use `unraid/tldr-newsletter-slack.xml` as the Unraid template. Required values are `SLACK_API_TOKEN`, `TZ`, `SCHEDULE_TIME`, and `NEWSLETTERS`.
+
+To enable a persistent local cache in Unraid, set `ENABLE_DATABASE=true` and keep the template default `DATABASE_URL=sqlite:////data/tldr_cache.db`. The template mounts `/mnt/user/appdata/tldr-newsletter-slack` to `/data`, so the SQLite file persists across container restarts, image updates, and server reboots.
+
+If you prefer external PostgreSQL, remove `DATABASE_URL` and set the `DB_*` variables. The default `DB_HOST=postgres` only works when Docker DNS can resolve a container or service named `postgres`, such as on a shared custom Docker network.
 
 ### Kubernetes setup
 

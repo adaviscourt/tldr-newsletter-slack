@@ -3,6 +3,7 @@ import json
 import logging
 from datetime import datetime
 from sqlalchemy import create_engine, Column, String, DateTime, Text, Integer
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from typing import Optional, Dict, Any
@@ -12,6 +13,10 @@ logging.basicConfig(
 )
 
 Base = declarative_base()
+
+
+def is_database_enabled() -> bool:
+    return os.getenv("ENABLE_DATABASE", "false").strip().lower() == "true"
 
 
 class ArticleCache(Base):
@@ -38,7 +43,8 @@ class DatabaseManager:
         self.db_url = self._get_database_url()
         self.engine = None
         self.Session = None
-        if os.getenv("ENABLE_DATABASE", "false").lower() == "true":
+        self.unavailable_reason = None
+        if is_database_enabled():
             self._initialize_db()
         else:
             logging.info("Database disabled; cache lookups and storage will be skipped")
@@ -69,6 +75,10 @@ class DatabaseManager:
         return articles_data
 
     def _get_database_url(self) -> str:
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            return database_url
+
         host = os.getenv("DB_HOST", "postgres")
         port = os.getenv("DB_PORT", "5432")
         user = os.getenv("DB_USER", "tldr_user")
@@ -77,14 +87,28 @@ class DatabaseManager:
 
         return f"postgresql://{user}:{password}@{host}:{port}/{database}"
 
+    def _create_engine(self):
+        url = make_url(self.db_url)
+        engine_kwargs = {"echo": False}
+
+        if url.drivername.startswith("sqlite"):
+            database = url.database
+            if database and database != ":memory:":
+                os.makedirs(os.path.dirname(os.path.abspath(database)), exist_ok=True)
+            engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+        return create_engine(self.db_url, **engine_kwargs)
+
     def _initialize_db(self):
         try:
-            self.engine = create_engine(self.db_url, echo=False)
+            self.engine = self._create_engine()
             Base.metadata.create_all(self.engine)
             self.Session = sessionmaker(bind=self.engine)
+            self.unavailable_reason = None
             logging.info("Database connection established successfully")
         except Exception as e:
-            logging.error(f"Failed to initialize database: {e}")
+            self.unavailable_reason = str(e)
+            logging.error(f"Failed to initialize database: {self.unavailable_reason}")
             self.engine = None
             self.Session = None
 
@@ -95,7 +119,8 @@ class DatabaseManager:
         self, newsletter_type: str, date: str
     ) -> Optional[Dict[str, Any]]:
         if not self.is_available():
-            logging.warning("Database not available, skipping cache lookup")
+            reason = f": {self.unavailable_reason}" if self.unavailable_reason else ""
+            logging.warning(f"Database not available, skipping cache lookup{reason}")
             return None
 
         cache_key = f"{newsletter_type}_{date}"
@@ -123,7 +148,8 @@ class DatabaseManager:
         self, newsletter_type: str, date: str, articles: Dict[str, Any]
     ) -> bool:
         if not self.is_available():
-            logging.warning("Database not available, skipping cache storage")
+            reason = f": {self.unavailable_reason}" if self.unavailable_reason else ""
+            logging.warning(f"Database not available, skipping cache storage{reason}")
             return False
 
         cache_key = f"{newsletter_type}_{date}"

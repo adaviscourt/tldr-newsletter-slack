@@ -16,3 +16,6 @@ services:
       NEWSLETTERS: data,tech,devops,product,ai
       SLACK_CHANNEL_PREFIX: tldr-newsletter-
       ENABLE_DATABASE: "false"
+      DATABASE_URL: sqlite:////data/tldr_cache.db
+    volumes:
+      - ./data:/data
