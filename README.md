@@ -4,7 +4,7 @@ Route the TLDR Newsletter(s) to Slack because I don't check my email often enoug
 
 ### Docker setup
 
-The container can run the API and the daily newsletter schedule itself, so minikube CronJobs are not required.
+The container runs both the API and the daily newsletter schedule.
 
 1. Create a Slack bot and copy its bot token.
 2. Create Slack channels matching `#tldr-newsletter-{newsletter}`, for example `#tldr-newsletter-data`.
