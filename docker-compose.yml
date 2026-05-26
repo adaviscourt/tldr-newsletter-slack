@@ -15,4 +15,7 @@ services:
       SCHEDULE_TIME: "06:00"
       NEWSLETTERS: data,tech,devops,product,ai
       SLACK_CHANNEL_PREFIX: tldr-newsletter-
-      ENABLE_DATABASE: "false"
+      ENABLE_CACHE: "false"
+      CACHE_DATABASE_PATH: /data/tldr_cache.db
+    volumes:
+      - ./data:/data
