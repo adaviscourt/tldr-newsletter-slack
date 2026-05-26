@@ -41,3 +41,57 @@ Interact with the API directly:
 ```
 curl -X GET http://localhost:5000/articles?newsletter=data
 ```
+
+### Debugging
+
+Inspect the SQLite cache from inside the container console:
+
+```
+python - <<'PY'
+import sqlite3
+
+conn = sqlite3.connect("/data/tldr_cache.db")
+
+print("tables:")
+for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'"):
+    print(row[0])
+
+print("\ncache rows:")
+for row in conn.execute("""
+    SELECT cache_key, newsletter_type, date, created_at
+    FROM article_cache
+    ORDER BY created_at DESC
+    LIMIT 20
+"""):
+    print(row)
+
+conn.close()
+PY
+```
+
+Count cached rows:
+
+```
+python - <<'PY'
+import sqlite3
+
+conn = sqlite3.connect("/data/tldr_cache.db")
+print(conn.execute("SELECT COUNT(*) FROM article_cache").fetchone()[0])
+conn.close()
+PY
+```
+
+Inspect one cached payload:
+
+```
+python - <<'PY'
+import json
+import sqlite3
+
+conn = sqlite3.connect("/data/tldr_cache.db")
+row = conn.execute("SELECT cache_key, articles_json FROM article_cache LIMIT 1").fetchone()
+print(row[0])
+print(json.dumps(json.loads(row[1]), indent=2)[:4000])
+conn.close()
+PY
+```
