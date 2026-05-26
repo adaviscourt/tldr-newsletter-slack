@@ -1,0 +1,18 @@
+services:
+  tldr-newsletter-slack:
+    image: ghcr.io/adaviscourt/tldr-newsletter-slack:latest
+    build:
+      context: ./tldr_newsletter_slack
+    container_name: tldr-newsletter-slack
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      TZ: America/Los_Angeles
+      SLACK_API_TOKEN: ${SLACK_API_TOKEN}
+      SCHEDULER_ENABLED: "true"
+      SCHEDULER_RUN_ON_START: "false"
+      SCHEDULE_TIME: "06:00"
+      NEWSLETTERS: data,tech,devops,product,ai
+      SLACK_CHANNEL_PREFIX: tldr-newsletter-
+      ENABLE_DATABASE: "false"

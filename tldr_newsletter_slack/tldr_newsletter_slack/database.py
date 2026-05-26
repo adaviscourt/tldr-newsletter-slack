@@ -38,7 +38,10 @@ class DatabaseManager:
         self.db_url = self._get_database_url()
         self.engine = None
         self.Session = None
-        self._initialize_db()
+        if os.getenv("ENABLE_DATABASE", "false").lower() == "true":
+            self._initialize_db()
+        else:
+            logging.info("Database disabled; cache lookups and storage will be skipped")
 
     def _serialize_articles(self, articles_data: Dict[str, Any]) -> Dict[str, Any]:
         """Convert Article namedtuples to dictionaries for JSON serialization."""
