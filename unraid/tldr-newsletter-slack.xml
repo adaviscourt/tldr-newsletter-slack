@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>tldr-newsletter-slack</Name>
+  <Repository>ghcr.io/adaviscourt/tldr-newsletter-slack:latest</Repository>
+  <Registry>https://ghcr.io/adaviscourt/tldr-newsletter-slack</Registry>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/adaviscourt/tldr-newsletter-slack</Support>
+  <Project>https://github.com/adaviscourt/tldr-newsletter-slack</Project>
+  <Overview>Posts TLDR newsletters to Slack on a built-in daily schedule.</Overview>
+  <Category>Productivity: Tools:</Category>
+  <WebUI>http://[IP]:[PORT:5000]/health</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/adaviscourt/tldr-newsletter-slack/main/unraid/tldr-newsletter-slack.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/adaviscourt/tldr-newsletter-slack/main/image.png</Icon>
+  <ExtraParams></ExtraParams>
+  <PostArgs></PostArgs>
+  <CPUset></CPUset>
+  <DateInstalled></DateInstalled>
+  <DonateText></DonateText>
+  <DonateLink></DonateLink>
+  <Requires></Requires>
+  <Config Name="Web Port" Target="5000" Default="5000" Mode="tcp" Description="Flask API port" Type="Port" Display="always" Required="false" Mask="false">5000</Config>
+  <Config Name="Timezone" Target="TZ" Default="America/Los_Angeles" Description="Container timezone used by SCHEDULE_TIME" Type="Variable" Display="always" Required="true" Mask="false">America/Los_Angeles</Config>
+  <Config Name="Slack API Token" Target="SLACK_API_TOKEN" Default="" Description="Slack bot token" Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Scheduler Enabled" Target="SCHEDULER_ENABLED" Default="true" Description="Enable built-in daily scheduler" Type="Variable" Display="always" Required="true" Mask="false">true</Config>
+  <Config Name="Run On Start" Target="SCHEDULER_RUN_ON_START" Default="false" Description="Post newsletters once when container starts" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Schedule Time" Target="SCHEDULE_TIME" Default="06:00" Description="Daily run time in HH:MM using container timezone" Type="Variable" Display="always" Required="true" Mask="false">06:00</Config>
+  <Config Name="Newsletters" Target="NEWSLETTERS" Default="data,tech,devops,product,ai" Description="Comma-separated newsletters to post" Type="Variable" Display="always" Required="true" Mask="false">data,tech,devops,product,ai</Config>
+  <Config Name="Slack Channel Prefix" Target="SLACK_CHANNEL_PREFIX" Default="tldr-newsletter-" Description="Prefix used to build Slack channel names" Type="Variable" Display="advanced" Required="false" Mask="false">tldr-newsletter-</Config>
+  <Config Name="Enable Database" Target="ENABLE_DATABASE" Default="false" Description="Enable PostgreSQL cache using DB_* variables" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="DB Host" Target="DB_HOST" Default="postgres" Description="PostgreSQL host when database is enabled" Type="Variable" Display="advanced" Required="false" Mask="false">postgres</Config>
+  <Config Name="DB Port" Target="DB_PORT" Default="5432" Description="PostgreSQL port" Type="Variable" Display="advanced" Required="false" Mask="false">5432</Config>
+  <Config Name="DB User" Target="DB_USER" Default="tldr_user" Description="PostgreSQL user" Type="Variable" Display="advanced" Required="false" Mask="false">tldr_user</Config>
+  <Config Name="DB Password" Target="DB_PASSWORD" Default="tldr_password" Description="PostgreSQL password" Type="Variable" Display="advanced" Required="false" Mask="true">tldr_password</Config>
+  <Config Name="DB Name" Target="DB_NAME" Default="tldr_cache" Description="PostgreSQL database" Type="Variable" Display="advanced" Required="false" Mask="false">tldr_cache</Config>
+</Container>
