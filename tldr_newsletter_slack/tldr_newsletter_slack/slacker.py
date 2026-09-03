@@ -2,6 +2,35 @@ import slack_sdk
 import time
 
 
+EMOJI_SHORTCODES = {
+    "👨‍💻": ":computer:",
+    "💻": ":computer:",
+    "🧠": ":brain:",
+    "🔒": ":lock:",
+    "🧑‍🤝‍🧑": ":busts_in_silhouette:",
+    "☁️": ":cloud:",
+    "☁": ":cloud:",
+    "👨‍💼": ":briefcase:",
+    "🎨": ":art:",
+    "📈": ":chart_with_upwards_trend:",
+    "🪙": ":coin:",
+    "💰": ":moneybag:",
+    "📊": ":bar_chart:",
+    "⚙️": ":gear:",
+    "⚙": ":gear:",
+    "📝": ":memo:",
+    "🔗": ":link:",
+}
+
+
+def slack_icon_emoji(emoji: str | None) -> str:
+    if not emoji:
+        return ":newspaper:"
+    if emoji.startswith(":") and emoji.endswith(":"):
+        return emoji
+    return EMOJI_SHORTCODES.get(emoji, ":newspaper:")
+
+
 class Slacker:
     def __init__(self, channel: str, token: str):
         self.slacker = slack_sdk.WebClient(token=token)
@@ -12,7 +41,7 @@ class Slacker:
             channel=self.channel,
             text=text,
             username=username,
-            icon_emoji=icon_emoji,
+            icon_emoji=slack_icon_emoji(icon_emoji),
             unfurl_links=False,
         )
 
